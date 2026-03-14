@@ -1,20 +1,32 @@
 <?php
-// Database Configuration para sa Aiven & Vercel
-$host     = getenv('DB_HOST');
-$port     = getenv('DB_PORT') ?: "12691"; // Default port ng Aiven
-$dbname   = getenv('DB_NAME');
-$username = getenv('DB_USER');
-$password = getenv('DB_PASS');
+// Database Configuration galing sa Aiven
+$host = 'mysql-3ccfa235-jennyheartteope0214-bde3.f.aivencloud.com'; //
+$port = '11469'; //
+$user = 'avnadmin'; // Default user ng Aiven
+$password = 'ILAGAY_DITO_ANG_SERVICE_PASSWORD'; // Kunin sa Aiven Console
+$dbname = 'defaultdb'; // Ang iyong schema
 
-// Create connection gamit ang mysqli (kasama ang Port)
-$conn = new mysqli($host, $username, $password, $dbname, $port);
+// Gumamit ng MySQLi object para sa SSL connection
+$conn = mysqli_init();
 
-// Check connection
-if ($conn->connect_error) {
-    error_log("Database connection failed: " . $conn->connect_error);
-    die("Unable to connect to the database. Please contact the administrator.");
+// I-set ang SSL options (Kailangan ito para sa Aiven)
+mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+
+// Subukang kumonekta
+$db_connect = mysqli_real_connect(
+    $conn, 
+    $host, 
+    $user, 
+    $password, 
+    $dbname, 
+    $port, 
+    NULL, 
+    MYSQLI_CLIENT_SSL
+);
+
+if (!$db_connect) {
+    die("Connection failed: " . mysqli_connect_error());
+} else {
+    // Connection success! Handa na para sa ESCR DQMS
 }
-
-// Set charset para sa special characters
-$conn->set_charset("utf8mb4");
 ?>
