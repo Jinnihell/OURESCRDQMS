@@ -1,0 +1,17 @@
+# Dependency directories
+/vendor
+/node_modules
+
+# Local configuration & environment secrets
+.env
+.env.local
+
+# Git and Editor files
+.git
+.gitignore
+.vscode
+.DS_Store
+
+# Documentation and Tests
+/tests
+README.md
