@@ -3,7 +3,7 @@
 $host = 'mysql-3ccfa235-jennyheartteope0214-bde3.f.aivencloud.com';
 $port = '11469';
 $user = 'avnadmin';
-$password = 'ILAGAY_DITO_ANG_SERVICE_PASSWORD'; // Kunin ito sa Aiven Console
+$password = 'AVNS_uE6_95G6f2MoNQAn5WK'; // Kunin ito sa Aiven Console
 $dbname = 'defaultdb';
 
 // Initialize MySQLi
