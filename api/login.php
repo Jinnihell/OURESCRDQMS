@@ -1,116 +1,37 @@
-<?php 
+<?php
 session_start();
+require_once 'db_conn.php'; // Siguraduhin na ito yung may SSL settings
 
-// Check if user is already logged in, redirect accordingly
-if (isset($_SESSION['user_id'])) {
-    if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') {
-        header("Location: admin_selection.php");
-    } else {
-        header("Location: landing.php");
-    }
-    exit();
-}
-
-include 'db_config.php'; 
-include 'csrf_protection.php'; 
-
-$error = "";
-
-// Rate limiting check
-$max_attempts = 5;
-$lockout_time = 300; // 5 minutes
-if (!isset($_SESSION['login_attempts'])) {
-    $_SESSION['login_attempts'] = 0;
-    $_SESSION['lockout_until'] = 0;
-}
-
-// Check if user is locked out
-if (time() < $_SESSION['lockout_until']) {
-    $remaining = $_SESSION['lockout_until'] - time();
-    $error = "Too many failed attempts. Please try again in " . ceil($remaining / 60) . " minutes.";
-}
-
-// Check for error messages from URL (only if no other error)
-if (empty($error) && isset($_GET['error'])) {
-    if ($_GET['error'] === 'please_login') {
-        $error = "Please login to access this page.";
-    } elseif ($_GET['error'] === 'unauthorized') {
-        $error = "You are not authorized to access this page.";
-    }
-}
-
-// Check for success messages from URL
-if (isset($_GET['message']) && $_GET['message'] === 'logged_out') {
-    $error = "You have been logged out successfully.";
-}
-
-if (isset($_GET['reset']) && $_GET['reset'] === 'success') {
-    $error = "Password has been reset. Please login with your new password.";
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Verify CSRF token
-    if (!isset($_POST['csrf_token']) || !verifyCsrfToken($_POST['csrf_token'])) {
-        $error = "Invalid request. Please try again.";
-    } else {
-    $user_input = trim($_POST['username']);
+if (isset($_POST['login'])) {
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
 
-    // Search for user by either username or email
-    $stmt = $conn->prepare("SELECT id, username, password, role FROM users WHERE username=? OR email=?");
-    $stmt->bind_param("ss", $user_input, $user_input);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Hanapin ang user sa 'users' table base sa email
+    $sql = "SELECT * FROM users WHERE email = '$email'";
+    $result = mysqli_query($conn, $sql);
 
-    if ($user = $result->fetch_assoc()) {
-        // Verify the hashed password
-        if (password_verify($password, $user['password'])) {
-            // Regenerate session ID to prevent session fixation
-            session_regenerate_id(true);
-            
-            // Set Session Variables
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['login_time'] = time();
+    if ($row = mysqli_fetch_assoc($result)) {
+        // I-verify kung tugma ang 'password' sa hash na nasa database
+        if (password_verify($password, $row['password'])) {
+            $_SESSION['user_id'] = $row['id'];
+            $_SESSION['role'] = $row['role'];
+            $_SESSION['username'] = $row['username'];
 
-            // If an intended URL was saved by auth_check, redirect there (internal only)
-            if (isset($_SESSION['intended_url']) && !empty($_SESSION['intended_url'])) {
-                $target = $_SESSION['intended_url'];
-                unset($_SESSION['intended_url']);
-
-                // Prevent open-redirects: only allow internal paths (no scheme/host)
-                if (strpos($target, 'http://') === false && strpos($target, 'https://') === false) {
-                    header("Location: $target");
-                    exit();
-                }
-            }
-
-            // Role-Based Redirection (fallback)
-            if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') {
-                header("Location: admin_selection.php");
+            // Redirect base sa role (admin, staff, o student)
+            if ($row['role'] == 'admin') {
+                header("Location: admin_dashboard.php");
             } else {
-                // Students go to landing page first, then to transaction selection
-                header("Location: landing.php");
+                header("Location: index.php");
             }
             exit();
-            
         } else {
-            $error = "Invalid password.";
-            // Increment failed attempts
-            $_SESSION['login_attempts']++;
-            if ($_SESSION['login_attempts'] >= $max_attempts) {
-                $_SESSION['lockout_until'] = time() + $lockout_time;
-                $error = "Too many failed attempts. Please try again in 5 minutes.";
-            }
+            echo "Maling password!";
         }
     } else {
-        $error = "Account not found.";
-    }
+        echo "Hindi nahanap ang email na iyan.";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
