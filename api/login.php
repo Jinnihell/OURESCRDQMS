@@ -1,23 +1,27 @@
 <?php
 session_start();
-require_once 'db_conn.php'; // Siguraduhin na ito yung may SSL settings
+// Gamitin ang tamang file name na napag-usapan natin (db_config.php)
+require_once 'db_config.php'; 
 
-if (isset($_POST['login'])) {
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
+$error = ""; // Initialize error variable para hindi mag-error ang HTML
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Base sa input name mo sa HTML, 'username' ang ginamit mo
+    $login_input = mysqli_real_escape_string($conn, $_POST['username']);
     $password = $_POST['password'];
 
-    // Hanapin ang user sa 'users' table base sa email
-    $sql = "SELECT * FROM users WHERE email = '$email'";
+    // Hanapin ang user (email man o username ang i-type nila)
+    $sql = "SELECT * FROM users WHERE email = '$login_input' OR username = '$login_input'";
     $result = mysqli_query($conn, $sql);
 
     if ($row = mysqli_fetch_assoc($result)) {
-        // I-verify kung tugma ang 'password' sa hash na nasa database
+        // I-verify ang bcrypt hash ($2y$10$...) mula sa database
         if (password_verify($password, $row['password'])) {
             $_SESSION['user_id'] = $row['id'];
             $_SESSION['role'] = $row['role'];
             $_SESSION['username'] = $row['username'];
 
-            // Redirect base sa role (admin, staff, o student)
+            // Redirect base sa role
             if ($row['role'] == 'admin') {
                 header("Location: admin_dashboard.php");
             } else {
@@ -25,10 +29,10 @@ if (isset($_POST['login'])) {
             }
             exit();
         } else {
-            echo "Maling password!";
+            $error = "Maling password!";
         }
     } else {
-        echo "Hindi nahanap ang email na iyan.";
+        $error = "Hindi nahanap ang account na iyan.";
     }
 }
 ?>
