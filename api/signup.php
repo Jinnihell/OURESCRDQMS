@@ -180,7 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <i class="fa-solid fa-eye toggle-password" onclick="togglePass('regPass', this)"></i>
             </div>
 
-            <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>">
+            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
             <div class="terms-group">
                 <input type="checkbox" id="terms" onclick="toggleBtn()">
