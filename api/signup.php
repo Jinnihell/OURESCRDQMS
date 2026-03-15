@@ -98,7 +98,7 @@ if ($_SESSION['signup_attempts'] >= $max_signups) {
     <title>Sign Up - ESCR digital Queue Management System</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="responsive.css">
+   <link rel="stylesheet" href="responsive.css">
     <style>
         * { box-sizing: border-box; }
         body { 
