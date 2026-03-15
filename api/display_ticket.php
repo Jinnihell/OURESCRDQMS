@@ -217,7 +217,6 @@ $suggested_window = isset($window_mapping[$category]) ? $window_mapping[$categor
                 width: 100%;
             }
         }
-    </style>
 
         /* PRINT OPTIMIZATION */
         @media print {
@@ -231,7 +230,7 @@ $suggested_window = isset($window_mapping[$category]) ? $window_mapping[$categor
 
     <div class="ticket-container" id="printableArea">
         <div class="logo-header">
-            <img src="escr-logo.png" alt="ESCR Logo">
+           <img src="/logo.png" alt="ESCR Logo" class="logo">
             <div class="ticket-header">Student Queue Ticket</div>
         </div>
         
