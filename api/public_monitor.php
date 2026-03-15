@@ -168,7 +168,7 @@
 <div class="layout-container">
     <div class="queue-section">
         <div class="header">
-            <img src="escr-logo.png" width="60">
+           <img src="/logo.png" alt="ESCR Logo" class="logo" width="60">
             <div>
                 <h2 style="margin:0;">ESCR QUEUE SYSTEM</h2>
                 <div id="live-clock" style="color:#ff8c00; font-weight:bold;"></div>
