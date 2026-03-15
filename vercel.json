@@ -5,12 +5,13 @@
     }
   },
   "routes": [
-    { "src": "/logo.png", "dest": "/logo.png" },
-    { "src": "/responsive.css", "dest": "/api/responsive.css" },
-    { "src": "/signup.php", "dest": "/api/signup.php", "methods": ["GET", "POST"] },
-    { "src": "/login.php", "dest": "/api/login.php", "methods": ["GET", "POST"] },
-    { "src": "/landing.php", "dest": "/api/landing.php", "methods": ["GET", "POST"] },
-    { "src": "/forgot_password.php", "dest": "/api/forgot_password.php" },
-    { "src": "/", "dest": "/api/login.php" }
+    {
+      "src": "/",
+      "dest": "/api/landing.php"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/$1"
+    }
   ]
 }
