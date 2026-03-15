@@ -1,92 +1,54 @@
 <?php 
 session_start();
 
-// Check if user is already logged in, redirect accordingly
-if (isset($_SESSION['user_id'])) {
-    if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') {
-        header("Location: admin_selection.php");
-    } else {
-       // Sa loob ng signup.php at login.php, palitan ang redirect paths:
-header("Location: /landing.php");
-    }
-    exit();
-}
-
 include 'db_config.php'; 
-include 'csrf_protection.php'; 
+
+// Kung walang hiwalay na csrf_protection.php, maaari mong gamitin ang simpleng version na ito
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 
 $message = "";
 
-// Rate limiting for signup - prevent mass account creation
-$max_signups = 10;
-$signup_timeout = 3600; // 1 hour
-if (!isset($_SESSION['signup_attempts'])) {
-    $_SESSION['signup_attempts'] = 0;
-    $_SESSION['first_signup_time'] = 0;
-}
-
-// Reset attempts after timeout
-if ($_SESSION['first_signup_time'] > 0 && time() - $_SESSION['first_signup_time'] > $signup_timeout) {
-    $_SESSION['signup_attempts'] = 0;
-    $_SESSION['first_signup_time'] = 0;
-}
-
-if ($_SESSION['signup_attempts'] >= $max_signups) {
-    $message = "Too many accounts created. Please try again later.";
-} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Verify CSRF token
-    if (!isset($_POST['csrf_token']) || !verifyCsrfToken($_POST['csrf_token'])) {
-        $message = "Invalid request. Please try again.";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // CSRF Verification
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $message = "Invalid request. Please refresh the page.";
     } else {
-    $email = trim($_POST['email']);
-    $username = trim($_POST['username']);
-    $password = $_POST['password'];
+        $email = trim($_POST['email']);
+        $username = trim($_POST['username']);
+        $password = $_POST['password'];
+        $role = 'student';
 
-    // 1. Basic Validation
-    if (strlen($password) < 8) {
-        $message = "Password must be at least 8 characters.";
-    } elseif (!preg_match('/[A-Z]/', $password)) {
-        $message = "Password must contain at least one uppercase letter.";
-    } elseif (!preg_match('/[a-z]/', $password)) {
-        $message = "Password must contain at least one lowercase letter.";
-    } elseif (!preg_match('/[0-9]/', $password)) {
-        $message = "Password must contain at least one number.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $message = "Please enter a valid email address.";
-    } else {
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        
-        // 2. Check for duplicates - Using Prepared Statement
-        $check = $conn->prepare("SELECT id FROM users WHERE email = ? OR username = ?");
-        $check->bind_param("ss", $email, $username);
-        $check->execute();
-        $check_result = $check->get_result();
-        if ($check_result->num_rows > 0) {
-            $message = "Username or Email already exists!";
+        if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password)) {
+            $message = "Password must be at least 8 characters with one uppercase letter.";
         } else {
-            $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'student')");
-            $stmt->bind_param("sss", $username, $email, $hashed_password);
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             
-            if ($stmt->execute()) {
-                // Track successful signups for rate limiting
-                if ($_SESSION['first_signup_time'] == 0) {
-                    $_SESSION['first_signup_time'] = time();
-                }
-                $_SESSION['signup_attempts']++;
-                
-                // Log them in automatically after signup
-                $_SESSION['user_id'] = $conn->insert_id;
-                $_SESSION['username'] = $username;
-                $_SESSION['role'] = 'student';
-                header("Location: landing.php");
-                exit();
+            // Check for duplicates
+            $check = $conn->prepare("SELECT id FROM users WHERE email = ? OR username = ?");
+            $check->bind_param("ss", $email, $username);
+            $check->execute();
+            if ($check->get_result()->num_rows > 0) {
+                $message = "Username or Email already exists!";
             } else {
-                $message = "Database error. Please try again.";
+                // FIXED: 4 placeholders for 4 variables
+                $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
+                $stmt->bind_param("ssss", $username, $email, $hashed_password, $role);
+                
+                if ($stmt->execute()) {
+                    $_SESSION['user_id'] = $conn->insert_id;
+                    $_SESSION['username'] = $username;
+                    $_SESSION['role'] = $role;
+                    
+                    // FIXED: Relative path para sa Vercel api folder
+                    header("Location: landing.php");
+                    exit();
+                } else {
+                    $message = "Database error: " . $stmt->error;
+                }
             }
-            $stmt->close();
         }
-        $check->close();
-    }
     }
 }
 ?>
