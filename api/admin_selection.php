@@ -87,7 +87,7 @@ if ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'staff') {
 
     <div class="header">
         <div class="logo-box">
-            <img src="escr-logo.png" alt="Logo">
+           <img src="/logo.png" alt="ESCR Logo" class="logo">
             <span>East Systems Colleges of Rizal</span>
         </div>
         <div class="help-icon" onclick="toggleModal('helpModal')">?</div>
