@@ -5,7 +5,12 @@
     }
   },
   "routes": [
-    { "src": "/(.*).php", "dest": "/api/$1.php" },
+    { "src": "/logo.png", "dest": "/logo.png" },
+    { "src": "/responsive.css", "dest": "/api/responsive.css" },
+    { "src": "/signup.php", "dest": "/api/signup.php" },
+    { "src": "/login.php", "dest": "/api/login.php" },
+    { "src": "/forgot_password.php", "dest": "/api/forgot_password.php" },
+    { "src": "/index.php", "dest": "/api/index.php" },
     { "src": "/", "dest": "/api/login.php" }
   ]
 }
