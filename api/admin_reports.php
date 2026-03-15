@@ -175,7 +175,7 @@ $hourStmt->close();
 <body>
     <div class="header">
         <div class="logo-box">
-            <img src="escr-logo.png" alt="Logo">
+           <img src="/logo.png" alt="ESCR Logo" class="logo">
             <div>
                 <h2>ESCR DQMS</h2>
                 <span>East Systems Colleges of Rizal</span>
