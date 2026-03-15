@@ -187,7 +187,7 @@ $stmt->close();
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="escr-logo.png" alt="Logo">
+           <img src="/logo.png" alt="ESCR Logo" class="logo">
             <p style="font-size: 12px; margin: 0;">East Systems Colleges of Rizal</p>
             <br>
             <br>
