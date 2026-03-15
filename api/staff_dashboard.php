@@ -932,7 +932,7 @@ $waiting_list_res = $waiting_list_stmt->get_result();
 
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="escr-logo.png" alt="Logo">
+            <img src="/logo.png" alt="ESCR Logo" class="logo">
             <p style="font-size: 12px; margin: 0;">East Systems Colleges of Rizal</p>
             <br>
             <h2>ESCR DQMS<br>Window No: <?php echo $window_id; ?></h2>
