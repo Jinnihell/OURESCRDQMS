@@ -197,7 +197,7 @@ if ($_SESSION['signup_attempts'] >= $max_signups) {
 <body>
 
     <div class="container">
-        <img src="api/logo.png" alt="ESCR Logo">
+        <img src="/logo.png" alt="ESCR Logo" class="logo">
         <h2>Create Account</h2>
         <p class="subtitle">Join ESCR Digital Queue Management System</p>
         <?php if($message) echo "<div class='error-msg'>" . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . "</div>"; ?>
