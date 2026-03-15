@@ -296,7 +296,7 @@ if ($_SESSION['role'] !== 'student') {
 
     <div class="navbar">
         <div class="logo-section">
-            <img src="escr-logo.png" alt="Logo">
+            <img src="/logo.png" alt="ESCR Logo" class="logo">
             <span>East Systems Colleges of Rizal</span>
         </div>
         <div class="help-circle" onclick="toggleHelpModal()">?
