@@ -6,7 +6,8 @@ if (isset($_SESSION['user_id'])) {
     if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') {
         header("Location: admin_selection.php");
     } else {
-        header("Location: landing.php");
+       // Sa loob ng signup.php at login.php, palitan ang redirect paths:
+header("Location: /landing.php");
     }
     exit();
 }
