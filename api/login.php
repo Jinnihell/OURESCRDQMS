@@ -221,7 +221,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
     <div class="container">
-       <img src="api/logo.png" alt="ESCR Logo">
+       <img src="/logo.png" alt="ESCR Logo" class="logo">
         <h2>ESCR DQMS</h2>
         <p class="subtitle">Digital Queue Management System</p>
 
