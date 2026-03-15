@@ -5,13 +5,9 @@
     }
   },
   "routes": [
-    {
-      "src": "/",
-      "dest": "/api/landing.php"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/$1"
-    }
+    { "src": "/", "dest": "/api/landing.php" },
+    { "src": "/login", "dest": "/api/login.php" },
+    { "src": "/signup", "dest": "/api/signup.php" },
+    { "src": "/(.*)", "dest": "/api/$1" }
   ]
 }
