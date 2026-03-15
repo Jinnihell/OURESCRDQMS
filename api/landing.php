@@ -5,7 +5,7 @@ include 'db_config.php';
 // If admin or staff reaches this page, redirect them to their dashboard
 if (isset($_SESSION['user_id'])) {
     if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') {
-        header("Location: admin_selection.php");
+        header("Location: /admin_selection.php");
         exit();
     }
     // For students, show the landing page with Get Started button
