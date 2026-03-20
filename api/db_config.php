@@ -1,9 +1,9 @@
 <?php
-$host = getenv('DB_HOST') ?: "mysql-3ccfa235-jennyheartteope0214-bde3.f.aivencloud.com";
+$host = getenv('DB_HOST') ?: "mysql-1490d578-iamthelonelyheart142-04e5.i.aivencloud.com";
 $user = getenv('DB_USER') ?: "avnadmin";
-$pass = getenv('DB_PASS') ?: "AVNS_uE6_95G6f2MoNQAn5WK"; 
+$pass = getenv('DB_PASS') ?: "AVNS_-lV0wWkRlqustbDVtWTK"; 
 $db   = getenv('DB_NAME') ?: "defaultdb";
-$port = getenv('DB_PORT') ?: 11469;
+$port = getenv('DB_PORT') ?: 19184;
 
 // 1. Initialize mysqli
 $conn = mysqli_init();
