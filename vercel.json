@@ -1,14 +1,33 @@
-{
-  "builds": [
-    {
-      "src": "*.php",
-      "use": "vercel-php@0.7.2"
-    }
-  ],
-  "routes": [
-    { "src": "/", "dest": "/landing.php" },
-    { "src": "/login", "dest": "/login.php" },
-    { "src": "/signup", "dest": "/signup.php" },
-    { "src": "/(.*)", "dest": "/$1" }
-  ]
+<?php
+// 1. Initialize mysqli object
+$conn = mysqli_init();
+
+// 2. I-set ang SSL bago ang connection (Required for Aiven)
+mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL); 
+
+// 3. I-set ang iyong Credentials (Base sa iyong screenshots)
+$host = "mysql-1490d578-iamthelonelyheart142-04e5.i.aivencloud.com";
+$user = "avnadmin";
+$pass = "AVNS_-lV0wwKRlqustbDVtWTK"; // Palitan ito kung nag-reset ka ng password sa Aiven
+$db   = "defaultdb";
+$port = 19184;
+
+// 4. Kumonekta gamit ang mysqli_real_connect
+$success = mysqli_real_connect(
+    $conn, 
+    $host, 
+    $user, 
+    $pass, 
+    $db, 
+    (int)$port
+);
+
+// 5. Check kung may error sa koneksyon
+if (!$success) {
+    error_log("Connection failed: " . mysqli_connect_error());
+    die("Database connection error. Please try again later.");
 }
+
+// 6. Set charset para sa Tagalog/Special characters
+$conn->set_charset("utf8mb4");
+?>
