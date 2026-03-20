@@ -1,21 +1,23 @@
 <?php
-// Gamitin ang Environment Variables mula sa Vercel Settings
-// Kung wala ito, gagamitin ang default values para sa Aiven
 $host = getenv('DB_HOST') ?: "mysql-3ccfa235-jennyheartteope0214-bde3.f.aivencloud.com";
 $user = getenv('DB_USER') ?: "avnadmin";
 $pass = getenv('DB_PASS') ?: "AVNS_uE6_95G6f2MoNQAn5WK"; 
 $db   = getenv('DB_NAME') ?: "defaultdb";
 $port = getenv('DB_PORT') ?: 11469;
 
-// Create connection
-$conn = new mysqli($host, $user, $pass, $db, (int)$port);
+// 1. Initialize mysqli
+$conn = mysqli_init();
 
-// Check connection
-if ($conn->connect_error) {
-    error_log("Connection failed: " . $conn->connect_error);
+// 2. I-set ang SSL bago kumonekta (Required for Aiven)
+mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL); 
+
+// 3. Kumonekta gamit ang real_connect
+$success = mysqli_real_connect($conn, $host, $user, $pass, $db, (int)$port);
+
+if (!$success) {
+    error_log("Connection failed: " . mysqli_connect_error());
     die("Database connection error. Please try again later.");
 }
 
-// Set charset para sa mga special characters
 $conn->set_charset("utf8mb4");
 ?>
